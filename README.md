@@ -10,6 +10,8 @@ A simple mobile forecasting weather app using openweather API build using flutte
 
 # How to Run
 
+## By Code
+
 1. Clone this repository, open your terminal in or go to src folder
    `cd src`
 
@@ -20,3 +22,7 @@ A simple mobile forecasting weather app using openweather API build using flutte
 
 4. Run the app using
    `flutter run`
+
+## By Apk
+
+1. Install the apk to your android found in the release
