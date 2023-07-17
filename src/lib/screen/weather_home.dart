@@ -67,7 +67,6 @@ class _WeatherHomeState extends State<WeatherHome> {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: WeatherList(listWeather: listWeatherData),
             ),
-      // backgroundColor: const Color.fromARGB(229, 244, 240, 244),
     );
   }
 }

@@ -32,11 +32,13 @@ class WeatherDetail extends StatelessWidget {
 
   final Weather weather;
 
+  // Get date from UTC to GMT+7
   String getDateTime(int dt) {
     final date = DateTime.fromMillisecondsSinceEpoch(dt * 1000).toLocal();
     return '${dayMap[date.weekday]}, ${monthMap[date.month]} ${date.day}, ${date.year}';
   }
 
+  // Get time from UTC to GMT+7
   String getHour(int dt) {
     final date = DateTime.fromMillisecondsSinceEpoch(dt * 1000).toLocal();
     return '${date.hour % 12}:${date.minute < 10 ? '0${date.minute}' : date.minute} ${date.hour > 12 ? 'PM' : 'AM'}';
@@ -59,7 +61,6 @@ class WeatherDetail extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Center(child: Text(weather.date)),
             Center(
                 child: Text(
               getDateTime(weather.date),
