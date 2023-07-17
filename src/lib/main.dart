@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:src/screen/splash_screen.dart';
 
 import 'screen/weather_home.dart';
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 198, 201, 237)),
       ),
-      home: const WeatherHome(),
+      home: const SplashScreen(),
     );
   }
 }
