@@ -8,8 +8,7 @@ class WeatherService {
         .get(Uri.parse(
           'https://api.openweathermap.org/data/2.5/forecast?lat=-6.175&lon=106.8&appid=33a86c5d628c8ed63e721f473d2a106e',
         ))
-        .then((value) => value)
-        .catchError((error) => throw error);
+        .timeout(const Duration(seconds: 1));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {

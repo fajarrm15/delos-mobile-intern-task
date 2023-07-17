@@ -14,32 +14,56 @@ class WeatherHome extends StatefulWidget {
 
 class _WeatherHomeState extends State<WeatherHome> {
   List<Weather> listWeatherData = [];
+  bool retryFlag = false;
   String errorMessage = "";
 
-  void _getWeather() async {
-    try {
-      final response = await WeatherService().fetchWeather();
+  Future<void> _getWeather() async {
+    // Retry if network error
+    const int maxRetryCount = 2;
+    int retryCount = 0;
 
-      final List<Weather> loadedList = [];
+    while (retryCount < maxRetryCount) {
+      try {
+        final response = await WeatherService().fetchWeather();
 
-      for (final item in response['list']) {
-        loadedList.add(Weather(
-          item['weather'][0]['icon'],
-          item['dt'],
-          item['weather'][0]['main'],
-          item['weather'][0]['description'],
-          (item['main']['temp'] - 273.15).toStringAsFixed(1),
-          (item['main']['temp_min'] - 273.15).toStringAsFixed(1),
-          (item['main']['temp_max'] - 273.15).toStringAsFixed(1),
-        ));
+        final List<Weather> loadedList = [];
+
+        for (final item in response['list']) {
+          loadedList.add(Weather(
+            item['weather'][0]['icon'],
+            item['dt'],
+            item['weather'][0]['main'],
+            item['weather'][0]['description'],
+            (item['main']['temp'] - 273.15).toStringAsFixed(1),
+            (item['main']['temp_min'] - 273.15).toStringAsFixed(1),
+            (item['main']['temp_max'] - 273.15).toStringAsFixed(1),
+          ));
+        }
+
+        setState(() {
+          listWeatherData = loadedList;
+        });
+        break;
+      } catch (error) {
+        errorMessage = error.toString();
       }
 
-      setState(() {
-        listWeatherData = loadedList;
-      });
-    } catch (error) {
-      errorMessage = error.toString();
+      retryCount++;
+      await Future.delayed(const Duration(seconds: 1));
     }
+
+    if (retryCount == maxRetryCount) {
+      setState(() {
+        retryFlag = true;
+      });
+    }
+  }
+
+  void _onClickRefresh() {
+    setState(() {
+      retryFlag = false;
+    });
+    _getWeather();
   }
 
   @override
@@ -62,7 +86,16 @@ class _WeatherHomeState extends State<WeatherHome> {
         backgroundColor: const Color.fromARGB(255, 73, 148, 235),
       ),
       body: listWeatherData.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? (retryFlag
+              ? Center(
+                  child: ElevatedButton(
+                    onPressed: _onClickRefresh,
+                    child: const Text('Refresh'),
+                  ),
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                ))
           : Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: WeatherList(listWeather: listWeatherData),
